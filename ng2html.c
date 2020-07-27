@@ -155,9 +155,9 @@ void LoadConfig( void );
 #define NG_PREFIX "ng"              /* Prefix for the pages in the guides. */
 #define NG_ID     "%lx"             /* Used to generate guide page names. */
 #define NG_SUFFIX ".html"           /* Suffix for the file names. */
-#define NG_MENU   "menu" NG_SUFFIX  /* Name of the menu page. */
+#define NG_MENU   "index" NG_SUFFIX  /* Name of the menu page. */
 #define NG_INFO   "info" NG_SUFFIX  /* Name of the info/about page. */
-#define NG_FMENU  "fmenu" NG_SUFFIX /* Name of the frames enabled menu. */
+#define NG_FMENU  "index" NG_SUFFIX /* Name of the frames enabled menu. */
 
 /* Decrypt the NGs "encryption". */
 
@@ -239,6 +239,7 @@ void WriteInfo( NGTIDYHEAD *ngHeader )
     if ( f != NULL )
     {
 	SafePrint( f, "<HTML>\n<HEAD>\n<TITLE>%s - Information</TITLE>\n"
+"<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=cp866\">\n"
                    "</HEAD>\n%s\n<PRE>  Title: %s\nCredits: %s\n"
                    "         %s\n         %s\n         %s\n"
                    "         %s\n</PRE>\n</BODY>\n</HTML>\n",
@@ -284,6 +285,7 @@ void WriteMenu( FILE *fleNG, NGTIDYHEAD *ngHeader )
 	if ( iFrames )
 	{
 	    SafePrint( fFrameMenu, "<HTML>\n<HEAD><TITLE>%s - Menu</TITLE>"
+"<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=cp866\">\n"
                        "</HEAD>\n<FRAMESET COLS=\"%s\">\n<NOFRAMES>\n%s\n"
                        "<OL>\n", ngHeader->szTitle, pszFrameCols,
                        pszBodyString );
@@ -751,6 +753,7 @@ void TidyHeader( NGHEADER *pngHeader, NGTIDYHEAD *pngTidy )
 
 unsigned char SaneText( unsigned char bChar )
 {
+    return( bChar );
     switch ( bChar )
     {
     case 0xB3 :            /* Vertical graphics. */
@@ -810,10 +813,13 @@ unsigned char SaneText( unsigned char bChar )
 	bChar = '#';
 	break;
     default :
+/*
 	if ( ( bChar < ' ' || bChar > 0x7E ) && bChar )
 	{
 	    bChar = '.';
 	}
+*/
+;
     }
 
     return( bChar );
@@ -974,7 +980,9 @@ void StandardButtons( FILE *f )
 
 void StandardHeader( FILE *f, NGTIDYHEAD *pHead, char *pszPageType )
 {
-    SafePrint( f, "<HTML>\n<HEAD><TITLE>%s - %s</TITLE></HEAD>\n%s\n\n",
+    SafePrint( f, "<HTML>\n<HEAD><TITLE>%s - %s</TITLE></HEAD>\n"
+"<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=cp866\">\n"
+"%s\n\n",
                pHead->szTitle, pszPageType, pszBodyString );
 }
 
@@ -983,12 +991,6 @@ void StandardHeader( FILE *f, NGTIDYHEAD *pHead, char *pszPageType )
 
 void StandardFooter( FILE *f )
 {
-#ifndef NO_ADVERT
-    SafePrint( f, "<HR>\nThis page created by ng2html v" NG2HTML_VERSION
-               ", the Norton guide to HTML conversion utility.\n"
-               "Written by <A HREF=\"http://www.acemake.com/hagbard\">"
-               "Dave Pearson</A>\n<HR>" );
-#endif
     SafePrint( f, "\n</BODY>\n</HTML>\n" );
 }
 
